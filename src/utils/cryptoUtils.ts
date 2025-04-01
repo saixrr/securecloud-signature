@@ -1,16 +1,7 @@
 
-// Note: This file simulates cryptographic operations for demonstration purposes.
-// In a real implementation, you would use actual cryptographic libraries.
 
-// Simulated private key (would be securely generated and stored in a real implementation)
 const PRIVATE_KEY = '5f4dcc3b5aa765d61d8327deb882cf99';
 
-/**
- * Simulates generating a digital signature using HMAC-DRBG and NTRUSign
- * @param username The username input
- * @param password The password input
- * @returns A simulated digital signature
- */
 export const generateSignature = async (username: string, password: string): Promise<string> => {
   // Simulate processing time
   await new Promise(resolve => setTimeout(resolve, 1500));
@@ -34,22 +25,14 @@ export const generateSignature = async (username: string, password: string): Pro
   return `NTRU_SIG${signature}${randomPart}`;
 };
 
-/**
- * Simulates verifying a digital signature
- * @param signature The signature to verify
- * @returns True if signature is valid, false otherwise
- */
+
+ 
 export const verifySignature = (signature: string): boolean => {
-  // In a real implementation, this would verify the signature using the NTRUSign algorithm
-  // For demonstration, we'll just check if the signature starts with our expected prefix
+ 
   return signature.startsWith('NTRU_SIG');
 };
 
-/**
- * Simulates encrypting data using NTRU encryption
- * @param data The data to encrypt
- * @returns Encrypted data
- */
+
 export const encryptData = async (data: string): Promise<string> => {
   // Simulate processing time
   await new Promise(resolve => setTimeout(resolve, 1000));
@@ -104,3 +87,57 @@ export const decryptData = async (encryptedData: string): Promise<string> => {
   
   return decrypted;
 };
+
+// src/utils/cryptoUtils.ts
+
+// const LAMBDA_ENDPOINT = 'https://rmc5ph1v6h.execute-api.eu-north-1.amazonaws.com/dev'; // Update with actual URL
+
+// export const generateSignature = async (username: string, password: string): Promise<{ signature: string; token: string }> => {
+//   const data = `${username}:${password}`;
+
+//   const response = await fetch(LAMBDA_ENDPOINT, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       action: 'generateSignature',
+//       data,
+//     }),
+//   });
+
+//   const result = await response.json();
+//   if (!response.ok) {
+//     throw new Error(result.message || 'Failed to generate signature');
+//   }
+
+//   return {
+//     signature: result.signature,
+//     token: result.token,
+//   };
+// };
+
+// export const verifySignature = async (
+//   username: string,
+//   password: string,
+//   signature: string,
+//   token: string
+// ): Promise<boolean> => {
+//   const data = `${username}:${password}`;
+
+//   const response = await fetch(LAMBDA_ENDPOINT, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       action: 'verifySignature',
+//       data,
+//       providedSignature: signature,
+//       token,
+//     }),
+//   });
+
+//   const result = await response.json();
+//   return result.verified;
+// };
