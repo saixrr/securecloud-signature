@@ -100,7 +100,7 @@ const Dashboard: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-xl">NTRUSign</span>
+                <span className="font-semibold text-xl">Falcon</span>
                 <Key size={20} className="text-ntru-secondary" />
               </div>
             </CardContent>
@@ -151,21 +151,14 @@ const Dashboard: React.FC = () => {
                 </div>
                 
                 <Separator />
-                
-                <div className="space-y-2">
-                  <h3 className="font-medium">HMAC-DRBG</h3>
-                  <p className="text-sm text-ntru-gray">
-                    HMAC-DRBG (Hash-based Message Authentication Code Deterministic Random Bit Generator) 
-                    is a secure random number generation algorithm used in the digital signature process.
-                  </p>
-                </div>
+              
                 
                 <Separator />
                 
                 <div className="space-y-2">
-                  <h3 className="font-medium">NTRUSign</h3>
+                  <h3 className="font-medium">Falcon</h3>
                   <p className="text-sm text-ntru-gray">
-                    NTRUSign is a digital signature algorithm based on the NTRU lattice problem, 
+                    Falcon is a digital signature algorithm based on the NTRU lattice problem, 
                     providing post-quantum security for authentication and verification processes.
                   </p>
                 </div>

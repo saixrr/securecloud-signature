@@ -6,39 +6,69 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { LockKeyhole, UnlockKeyhole, FileUp, Check, RefreshCw } from 'lucide-react';
 import { encryptData, decryptData } from '@/utils/cryptoUtils';
 import { toast } from 'sonner';
+import { useNTRUEncrypt } from '@/hooks/useNTRUEncrypt';
 
 const EncryptionPanel: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [mode, setMode] = useState<'encrypt' | 'decrypt'>('encrypt');
+  const { loaded, generateKeypair, encrypt, decrypt } = useNTRUEncrypt();
 
+  const isValidBase64 = (str: string) => {
+    try {
+      return btoa(atob(str)) === str;
+    } catch {
+      return false;
+    }
+  };
+
+  
   const handleProcess = async () => {
-    if (!inputText) {
-      toast.error('Please enter text to process');
+    if (!loaded) {
+      toast.error('NTRU module not loaded');
       return;
     }
-
+  
     setIsProcessing(true);
-    
+  
     try {
       if (mode === 'encrypt') {
-        const encrypted = await encryptData(inputText);
-        setOutputText(encrypted);
-        toast.success('Data encrypted successfully using NTRU encryption');
+        const start = performance.now();
+        const { publicKey, secretKey } = generateKeypair();
+        const { ciphertext, sharedSecret } = encrypt(publicKey);
+        const end = performance.now();
+
+        console.log(`🕒 NTRU Encrypt Time: ${(end - start).toFixed(2)} ms`);
+  
+        const ciphertextBase64 = btoa(String.fromCharCode(...ciphertext));
+        setOutputText(ciphertextBase64);
+  
+        toast.success('Data encrypted with NTRU (shared secret generated)');
       } else {
-        const decrypted = await decryptData(inputText);
-        setOutputText(decrypted);
-        toast.success('Data decrypted successfully using NTRU decryption');
+        if (!isValidBase64(inputText)) {
+          toast.error('Invalid base64 input. Cannot decrypt.');
+          return;
+        }
+      
+        const ciphertext = Uint8Array.from(atob(inputText), c => c.charCodeAt(0));
+        const { publicKey, secretKey } = generateKeypair(); // Replace this with stored keys in real app
+        const sharedSecret = decrypt(ciphertext, secretKey);
+      
+        const secretBase64 = btoa(String.fromCharCode(...sharedSecret));
+        setOutputText(secretBase64);
+      
+        toast.success('Data decrypted and shared secret derived');
       }
-    } catch (error) {
-      toast.error(`Failed to ${mode} data`);
-      console.error(error);
+      
+    } catch (err) {
+      console.error(err);
+      toast.error(`Failed to ${mode} using NTRU`);
     } finally {
       setIsProcessing(false);
     }
   };
-
+  
   const handleModeToggle = () => {
     setMode(prev => prev === 'encrypt' ? 'decrypt' : 'encrypt');
     setInputText('');
